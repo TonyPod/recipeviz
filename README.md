@@ -6,9 +6,9 @@
 * 蔡晨沁：country's view
 * 白梅：global view
 
-前两个页面的原型我已经建立好：大家访问 https://tonypod.github.io/recipeviz/ 这个链接就可以看到效果，这只是个原型，给大家作为参考
+前两个页面的原型我已经建立好：大家访问 https://tonypod.github.io/recipeviz/ 这个链接就可以看到效果，这只是个原型，给大家作为参考，目前数据还没有完全下载下来，我尽快先放上小规模的示例数据供大家调用
 
-另外，大家可以fork这个仓库，有什么改动pull request统一提交到这里吧
+另外，大家可以fork这个仓库，有什么改动pull request统一提交到这里吧。有任何问题微信即可 =)
 
 PPT是英文的，为便于理解，用中文描述一下前两个view是这样的：
 
