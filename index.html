@@ -1,18 +1,75 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<head>
+<title>Recipe Visualization</title>
+</head>
 <style>
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  width: 960px;
+  width: 1280px;
   height: 500px;
-  position: relative;
+  position: absolute;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: orange;
+}
+
+.bar:hover {
+  fill: orangered ;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
 }
 
 #canvas {
 }
 
 #canvas-svg {
+float:left;
+}
+
+#bar-chart {
+  width:960px;
+  height:500px;
 }
 
 
@@ -43,20 +100,273 @@ body {
   margin-left: 20px;
   float: right;
 }
+#search-btn-panel{
+  text-align:center;
+}
+#btn-search{
+  margin-top: 10px;
+}
 
+#accordion{
+  margin-top: 20px;
+  width:300px; 
+  height:auto;
+  float:right
+} 
 </style>
-
-<div id="tooltip-container"></div>
+ <link rel="stylesheet" href="css/jquery-ui.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/jquery-1.12.4.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#accordion" ).accordion();
+  } );
+  </script>
+<div id="tooltip-container">
+	<h3>Recipe Viz</h3>
+</div>
 
 <div id="canvas-svg"></div>
 
-<script src="js/d3.min.js"></script>
-<script src="js/topojson.min.js"></script>
-<script src="js/jquery.min.js"></script>
+ <div id="accordion">
+  <h3>Basic</h3>
+  <div>
+    <div>
+	  <label for="ingredients">Ingredients</label>
+	  <input id="ingredients" size="20">
+	</div>
+    <div>
+	  <label for="cooking-technique">Cooking technique</label>
+      <select name="cooking-technique" id="cooking-technique">
+        <option>A</option>
+        <option>B</option>
+        <option selected="selected">C</option>
+        <option>D</option>
+        <option>E</option>
+      </select>
+	</div>
+	<div>
+	  <label for="course">Course</label>
+      <select name="course" id="course">
+        <option>A</option>
+        <option>B</option>
+        <option selected="selected">C</option>
+        <option>D</option>
+        <option>E</option>
+      </select>
+	</div>
+  </div>
+  <h3>Nutrition</h3>
+  <div>
+   <fieldset>
+    <label for="checkbox-1">Low fat</label>
+    <input type="checkbox" name="checkbox-1" id="checkbox-1">
+    <label for="checkbox-2">Low carb</label>
+    <input type="checkbox" name="checkbox-2" id="checkbox-2">
+    <label for="checkbox-3">Low calories</label>
+    <input type="checkbox" name="checkbox-3" id="checkbox-3">
+    <label for="checkbox-4">Low sodium</label>
+    <input type="checkbox" name="checkbox-4" id="checkbox-4">
+    <label for="checkbox-5">High fiber</label>
+    <input type="checkbox" name="checkbox-5" id="checkbox-5">
+    <label for="checkbox-6">Low sugar</label>
+    <input type="checkbox" name="checkbox-6" id="checkbox-6">
+  </fieldset>
+
+  </div>
+  <h3>Flavor</h3>
+  <div>
+	<p>
+	  <label for="spicy">Spicy</label>
+      <input type="text" id="spicy" readonly style="border:0; color:#f6931f; font-weight:regular;">
+    </p>
+    <div id="slider-spicy-range"></div>
+	<p>
+	  <label for="savory">Savory</label>
+      <input type="text" id="savory" readonly style="border:0; color:#f6931f; font-weight:regular;">
+    </p>
+    <div id="slider-savory-range"></div>
+	<p>
+	  <label for="bitter">Bitter</label>
+      <input type="text" id="bitter" readonly style="border:0; color:#f6931f; font-weight:regular;">
+    </p>
+    <div id="slider-bitter-range"></div>
+	<p>
+	  <label for="sweet">Sweet</label>
+      <input type="text" id="sweet" readonly style="border:0; color:#f6931f; font-weight:regular;">
+    </p>
+    <div id="slider-sweet-range"></div>
+	<p>
+	  <label for="sour">Sour</label>
+      <input type="text" id="sour" readonly style="border:0; color:#f6931f; font-weight:regular;">
+    </p>
+    <div id="slider-sour-range"></div>
+	<p>
+	  <label for="salty">Salty</label>
+      <input type="text" id="salty" readonly style="border:0; color:#f6931f; font-weight:regular;">
+    </p>
+    <div id="slider-salty-range"></div>
+  </div>
+ </div>
+<div id="search-btn-panel">
+ <button id="btn-search" class="ui-button ui-corner-all ui-widget">Search</button>
+</div>
+
+<div id="bar-chart"></div>
 
 <script>
+$( function() {
+	// cooking-technique
+    $( "#cooking-technique" ).selectmenu();
+	// course
+    $( "#course" ).selectmenu();
+	//spicy
+    $( "#slider-spicy-range" ).slider({
+      range: true,
+      min: 0,
+      max: 6,
+      values: [ 0, 6 ],
+      slide: function( event, ui ) {
+        $( "#spicy" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+      }
+    });
+    $( "#spicy" ).val( $( "#slider-spicy-range" ).slider( "values", 0 ) +
+      " - " + $( "#slider-spicy-range" ).slider( "values", 1 ) );
+	//savory
+    $( "#slider-savory-range" ).slider({
+      range: true,
+      min: 0,
+      max: 6,
+      values: [ 0, 6 ],
+      slide: function( event, ui ) {
+        $( "#savory" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+      }
+    });
+    $( "#savory" ).val( $( "#slider-savory-range" ).slider( "values", 0 ) +
+      " - " + $( "#slider-savory-range" ).slider( "values", 1 ) );
+  //bitter
+    $( "#slider-bitter-range" ).slider({
+      range: true,
+      min: 0,
+      max: 6,
+      values: [ 0, 6 ],
+      slide: function( event, ui ) {
+        $( "#bitter" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+      }
+    });
+    $( "#bitter" ).val( $( "#slider-bitter-range" ).slider( "values", 0 ) +
+      " - " + $( "#slider-bitter-range" ).slider( "values", 1 ) );
+  //sweet
+    $( "#slider-sweet-range" ).slider({
+      range: true,
+      min: 0,
+      max: 6,
+      values: [ 0, 6 ],
+      slide: function( event, ui ) {
+        $( "#sweet" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+      }
+    });
+    $( "#sweet" ).val( $( "#slider-sweet-range" ).slider( "values", 0 ) +
+      " - " + $( "#slider-sweet-range" ).slider( "values", 1 ) );
+    //sour
+    $( "#slider-sour-range" ).slider({
+      range: true,
+      min: 0,
+      max: 6,
+      values: [ 0, 6 ],
+      slide: function( event, ui ) {
+        $( "#sour" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+      }
+    });
+    $( "#sour" ).val( $( "#slider-sour-range" ).slider( "values", 0 ) +
+      " - " + $( "#slider-sour-range" ).slider( "values", 1 ) );
+    //salty
+    $( "#slider-salty-range" ).slider({
+      range: true,
+      min: 0,
+      max: 6,
+      values: [ 0, 6 ],
+      slide: function( event, ui ) {
+        $( "#salty" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+      }
+    });
+    $( "#salty" ).val( $( "#slider-salty-range" ).slider( "values", 0 ) +
+      " - " + $( "#slider-salty-range" ).slider( "values", 1 ) );
 
-d3.csv("population.csv", function(err, data) {
+	  //ingredients
+	  var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
+    function split( val ) {
+      return val.split( /,\s*/ );
+    }
+    function extractLast( term ) {
+      return split( term ).pop();
+    }
+ 
+    $( "#ingredients" )
+      // don't navigate away from the field on tab when selecting an item
+      .on( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+            $( this ).autocomplete( "instance" ).menu.active ) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        minLength: 0,
+        source: function( request, response ) {
+          // delegate back to autocomplete, but extract the last term
+          response( $.ui.autocomplete.filter(
+            availableTags, extractLast( request.term ) ) );
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+        select: function( event, ui ) {
+          var terms = split( this.value );
+          // remove the current input
+          terms.pop();
+          // add the selected item
+          terms.push( ui.item.value );
+          // add placeholder to get the comma-and-space at the end
+          terms.push( "" );
+          this.value = terms.join( ", " );
+          return false;
+        }
+      });
+  } );
+</script>
+
+<!-- D3 area-->
+<script src="js/d3.min.js"></script>
+<script src="js/topojson.min.js"></script>
+<script src="js/d3.tip.v0.6.3.js"></script>
+<script>
+
+d3.csv("data/population.csv", function(err, data) {
 
   var config = {"data0":"Country (or dependent territory)","data1":"Population",
               "label0":"label 0","label1":"label 1","color0":"#99ccff","color1":"#0050A1",
@@ -208,6 +518,9 @@ d3.csv("population.csv", function(err, data) {
             return "#ccc";
           }
         })
+		.on("mousedown", function(d) { //鼠标点击进入响应的国家页面
+			window.location.href="bubble.html?country=" + d.properties.name;
+		})
         .on("mousemove", function(d) {
             var html = "";
   
@@ -255,5 +568,80 @@ d3.csv("population.csv", function(err, data) {
   
   d3.select(self.frameElement).style("height", (height * 2.3 / 3) + "px");
 });
+
+
+// Bar chart
+var margin = {top: 40, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var formatPercent = d3.format(".0%");
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(formatPercent);
+
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+  })
+
+var svg = d3.select("#bar-chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.call(tip);
+
+d3.tsv("data/data.tsv", type, function(error, data) {
+  x.domain(data.map(function(d) { return d.letter; }));
+  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Frequency");
+
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.letter); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.frequency); })
+      .attr("height", function(d) { return height - y(d.frequency); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+
+});
+
+function type(d) {
+  d.frequency = +d.frequency;
+  return d;
+}
 
 </script>
