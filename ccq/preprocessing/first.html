@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>direct1.html</title>
+</head>
+<body>
+	<div>
+	<div><input type="radio" name="a2" id="a2" value="american" />american</div>
+	<div><input type="radio" name="a2" id="a2" value="brazilian" />brazilian</div>
+	<div><input type="radio" name="a2" id="a2" value="chinese" />chinese</div>
+	<div><input type="radio" name="a2" id="a2" value="cuban" />cuban</div>
+	<div><input type="radio" name="a2" id="a2" value="english" />english</div>
+	<div><input type="radio" name="a2" id="a2" value="ethiopian" />ethiopian</div>
+	<div><input type="radio" name="a2" id="a2" value="filipino" />filipino</div>
+	<div><input type="radio" name="a2" id="a2" value="french" />french</div>
+	<div><input type="radio" name="a2" id="a2" value="german" />german</div>
+	<div><input type="radio" name="a2" id="a2" value="greek" />greek</div>
+	<div><input type="radio" name="a2" id="a2" value="hungarian" />hungarian</div>
+	<div><input type="radio" name="a2" id="a2" value="indian" />indian</div>
+	<div><input type="radio" name="a2" id="a2" value="irish" />irish</div>
+	<div><input type="radio" name="a2" id="a2" value="italian" />italian</div>
+	<div><input type="radio" name="a2" id="a2" value="jamaican" />jamaican</div>
+	<div><input type="radio" name="a2" id="a2" value="japanese" />japanese</div>
+	<div><input type="radio" name="a2" id="a2" value="korean" />korean</div>
+	<div><input type="radio" name="a2" id="a2" value="mexican" />mexican</div>
+	<div><input type="radio" name="a2" id="a2" value="moroccan" />moroccan</div>
+	<div><input type="radio" name="a2" id="a2" value="peruvian" />peruvian</div>
+	<div><input type="radio" name="a2" id="a2" value="portuguese" />portuguese</div>
+	<div><input type="radio" name="a2" id="a2" value="russian" />russian</div>
+	<div><input type="radio" name="a2" id="a2" value="spanish" />spanish</div>
+	<div><input type="radio" name="a2" id="a2" value="swedish" />swedish</div>
+	<div><input type="radio" name="a2" id="a2" value="thai" />thai</div>
+	<div><input type="radio" name="a2" id="a2" value="turkish" />turkish</div>
+	<div><input type="radio" name="a2" id="a2" value="vietnamese" />vietnamese</div>
+	</div>
+	<div><button onclick="set()" value="submit">Submit</button>
+    <script>
+	    function set()
+	    {
+			var value1;
+			var radios = document.getElementsByName("a2");
+			for(var i = 0;i < radios.length; i++)
+			{
+				if(radios[i].checked)
+				{
+					value1 = radios[i].value;
+					console.log("value1:"+value1);
+					break;
+				}
+			}
+			window.location.href="index.html?country=" + value1;
+	    }
+    </script>
+</body>
+</html>
