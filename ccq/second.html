@@ -65,7 +65,7 @@ d3.csv("recipes\\"+country+".csv", function(d) {
       .attr("clip-path", function(d) { return "url(#clip-" + d.id + ")"; })
     .selectAll("tspan")
     .data(function(d) { 
-		
+		console.log(d);
 		return d.class.split(/(?=[A-Z][^A-Z])/g); 
 		
 	})
