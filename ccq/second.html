@@ -28,9 +28,12 @@ var pack = d3.pack()
     .size([width, width])
     .padding(1.5);
 
-d3.csv("recipes\\"+country+".csv", function(d) {
+d3.csv("recipes/"+country+".csv", function(d) {
   d.value = +d.value;
-  if (d.value) return d;
+  if (d.value) {
+	  console.log(d);
+	  return d
+  };
 }, function(error, classes) {
   if (error) throw error;
 
